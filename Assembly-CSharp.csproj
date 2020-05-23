@@ -58,9 +58,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Behaviour.cs" />
      <Compile Include="Assets\Scripts\Goal.cs" />
-     <Compile Include="Assets\Scripts\Setup.cs" />
+     <Compile Include="Assets\Scripts\Searcher.cs" />
+     <Compile Include="Assets\Scripts\TrainingArea.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>D:/Unity-Projekte/ML/Labyrinth_AI/Labyrinth AI/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
