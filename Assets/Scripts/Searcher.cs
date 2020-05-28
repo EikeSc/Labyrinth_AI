@@ -1,25 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.MLAgents;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Searcher : Agent
 {
-    public int movementspeed = 3;
-    public float rotationSpeed = 500000f;
+    public float movementspeed = 10f;
+    public float turningSpeed = 70f;
     public TrainingArea area;
+    private Rigidbody rigidBody;
     private float timeInS;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    
 
     public override void Initialize()
     {
-        base.Initialize();
+        rigidBody = GetComponent<Rigidbody>();
     }
 
     public override void OnActionReceived(float[] vectorAction)
@@ -31,20 +29,16 @@ public class Searcher : Agent
         {
             case 0:
                 turnLeft();
-                print("turn left");
                 break;
             
             case 1 :
                 moveForward();
-                print("move forward");
                 break;
             case 2:
                 turnRight();
-                print("turn right");
                 break;
             case 3:
                 moveBackward();
-                print("move backwards");
                 break;
             default:
                 doNothing();
@@ -52,26 +46,9 @@ public class Searcher : Agent
             
         }
         
-        /*
-        if (Mathf.FloorToInt(vectorAction[0]) == 1)
-        {
-            turnLeft();
-        }else if (Mathf.FloorToInt(vectorAction[0]) == 2)
-        {
-            moveForward();
-        }else if (Mathf.FloorToInt(vectorAction[0]) == 3)
-        {
-            turnRight();
-        }else if (Mathf.FloorToInt(vectorAction[0]) == 4)
-        {
-            moveBackward();
-        }
-        else
-        {
-            print("not known input detected");
-        }
-        */
     }
+
+   
 
     public override void OnEpisodeBegin()
     {
@@ -85,7 +62,6 @@ public class Searcher : Agent
 
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            print("up");
             actionsOut[0] = 1;
         }
         else if (Input.GetKey(KeyCode.DownArrow))
@@ -100,23 +76,25 @@ public class Searcher : Agent
 
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private void OnCollisionStay(Collision other)
     {
-        
+        AddReward(-2f/MaxStep);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
 
-        print("Player collided");
+      
         
         if (collision.gameObject.tag.Equals("Wall")||collision.gameObject.tag.Equals("Obstacle"))
         {
+            print("COLLIDED WITH WALL/OBSTACLE");
             AddReward(-2f/MaxStep);
         } else if (collision.gameObject.tag.Equals("Goal")) {
 
             SetReward(2f);
+            print("COLLIDED WITH GOAL");
             print("end of stage");
             EndEpisode();
             
@@ -125,25 +103,25 @@ public class Searcher : Agent
 
     void turnLeft()
     {
-        transform.Rotate(Vector3.down, rotationSpeed*Time.deltaTime);
+        rigidBody.AddTorque(Vector3.down.normalized*turningSpeed);
         AddReward(-1f/MaxStep);
     }
 
     void turnRight()
     {
-        transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+        rigidBody.AddTorque(Vector3.up.normalized*turningSpeed);
         AddReward(-1f/MaxStep);
     }
 
     void moveForward()
     {
-        transform.Translate(Vector3.forward * Time.deltaTime * movementspeed);
+        rigidBody.AddForce(transform.forward*movementspeed);
         AddReward(-1f/MaxStep);
     }
 
     void moveBackward()
     {
-        transform.Translate(Vector3.back * Time.deltaTime * movementspeed);
+        rigidBody.AddForce(transform.forward*movementspeed*-1f);
         AddReward(-1f/MaxStep);
     }
 

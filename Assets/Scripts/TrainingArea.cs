@@ -23,9 +23,6 @@ public class TrainingArea : MonoBehaviour
     {
         spawnedPositions = new List<Vector3>();
         setAgentPosition();
-        print("funktioniert hier überhaupt irgendwas?");
-
-
     }
 
     private void initializeEnvironment()
@@ -53,7 +50,6 @@ public class TrainingArea : MonoBehaviour
         {
             if (child.CompareTag("Obstacle") )
             {
-                print("Object to destroy found");
                 Destroy(child.gameObject);
                 
 
@@ -115,7 +111,6 @@ public class TrainingArea : MonoBehaviour
 
                 if (Vector3.Distance(point, position) < 5)
                 {
-                    print("Distance: " + Vector3.Distance(point, position));
                     spawnPositionFound = false;
 
                 }
@@ -127,7 +122,7 @@ public class TrainingArea : MonoBehaviour
         }
         if (spawnPositionFound)
         {
-            print("spawn obstacle");
+            print("spawn agent");
             agent.transform.position = positionToSpawn;
             agent.transform.rotation = rotationToSpawn;
             agent.area = this;
@@ -155,7 +150,6 @@ public class TrainingArea : MonoBehaviour
 
             foreach (var point in spawnedPositions.Where(point => Vector3.Distance(point, position) < 5))
             {
-                print("Dinstance: " + Vector3.Distance(point, position));
                 spawnPositionFound = false;
             }
 
@@ -163,7 +157,7 @@ public class TrainingArea : MonoBehaviour
         }
         if (spawnPositionFound)
         {
-            print("spawn obstacle");
+            print("spawn goal");
             goal.position = positionToSpawn;
             spawnedPositions.Add(goal.position);
         }
@@ -222,7 +216,7 @@ public class TrainingArea : MonoBehaviour
 
                 if (Vector3.Distance(point, position)<11)
                 {
-                    print("Dinstance: "+Vector3.Distance(point, position));
+                   
                     spawnPositionFound = false;
 
                 }else if (counter > 50) {
